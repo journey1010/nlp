@@ -396,3 +396,38 @@ python → 2
 genial → 1
 fácil  → 1
 ```
+
+## Stemming vs. Lematización
+
+| **Stemming**                        | **Lematización**           |
+| ----------------------------------- | -------------------------- |
+| Recorta la palabra                  | Busca su forma base        |
+| Usa reglas simples                  | Usa análisis lingüístico   |
+| Es más rápido                       | Es más preciso             |
+| Puede generar palabras inexistentes | Genera palabras válidas    |
+| `corriendo → corr`                  | `corriendo → correr`       |
+| `estudiantes → estudiant`           | `estudiantes → estudiante` |
+
+Stemming
+* Los          → los
+* estudiantes  → estudiant
+* estaban      → estab
+* estudiando   → estudi
+
+Resultado:
+
+los estudiant estab estudi
+Lematización
+* Los          → el
+* estudiantes  → estudiante
+* estaban      → estar
+* estudiando   → estudiar
+
+### En resumen
+
+```text
+Stemming      → cortar palabras
+Lematización  → encontrar la palabra base
+```
+
+> **Stemming es más rápido; lematización es más lingüísticamente correcta.**
