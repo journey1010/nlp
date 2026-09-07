@@ -77,7 +77,7 @@ solucionario/              referencia SOLO para el docente (no repartir)
 Cada archivo de ejercicio trae, en este orden:
 1. Un **demo mínimo** ya funcionando (para que el alumno vea el patrón antes
    de tocarlo).
-2. Bloques `# 🧩 RETO N` con **objetivo + restricciones + resultado
+2. Bloques `# RETO N` con **objetivo + restricciones + resultado
    esperado** en el docstring y `# TODO` donde el alumno escribe código.
    Nunca se entrega la solución completa ahí.
 

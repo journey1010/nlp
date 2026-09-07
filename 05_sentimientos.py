@@ -1,9 +1,4 @@
 """
-E3 -- Sentimientos: features + clasificación (2:25-3:15)
-
-Pregunta que abre el bloque: ¿cómo hace una máquina para saber si un texto
-es positivo o negativo, si solo entiende números?
-
 Pipeline de este archivo:
 
     texto -> preprocesamiento -> features (BoW) -> modelo -> predicción
@@ -24,7 +19,7 @@ from sklearn.naive_bayes import MultinomialNB
 
 
 # ---------------------------------------------------------------------------
-# DEMO -- ver físicamente texto -> matriz, antes de entrenar nada
+# ver físicamente texto -> matriz, antes de entrenar nada
 # ---------------------------------------------------------------------------
 def demo():
     textos = ["me gusta python", "no me gusta el frio", "python es genial"]
@@ -37,7 +32,7 @@ def demo():
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 8 -- Cargar opiniones.csv y vectorizar con BoW
+# Cargar opiniones.csv y vectorizar con BoW
 # ---------------------------------------------------------------------------
 def reto8_vectorizar(ruta_csv="data/opiniones.csv"):
     """
@@ -53,16 +48,15 @@ def reto8_vectorizar(ruta_csv="data/opiniones.csv"):
         X.shape -> (24, N) donde N es el tamaño del vocabulario.
         print(vectorizer.get_feature_names_out()[:10]) para ver palabras.
     """
-    # TODO: df = pd.read_csv(ruta_csv)
-    # TODO: vectorizer = CountVectorizer()
-    # TODO: X = vectorizer.fit_transform(df["texto"])
-    # TODO: y = df["sentimiento"]
-    # TODO: return X, y, vectorizer
-    raise NotImplementedError
+    df = pd.read_csv(ruta_csv)
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform(df["texto"])
+    y = df["sentimiento"]
+    return X, y, vectorizer
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 9 -- Entrenar Naive Bayes y predecir
+# Entrenar Naive Bayes y predecir
 # ---------------------------------------------------------------------------
 def reto9_entrenar(X, y):
     """
@@ -79,16 +73,16 @@ def reto9_entrenar(X, y):
         perfecto -- es intencional, buen punto para hablar de cuánta data
         necesita realmente un modelo de ML.
     """
-    # TODO: X_train, X_test, y_train, y_test = train_test_split(
-    #           X, y, test_size=0.2, random_state=42, stratify=y)
-    # TODO: modelo = MultinomialNB()
-    # TODO: modelo.fit(X_train, y_train)
-    # TODO: return modelo, X_test, y_test
-    raise NotImplementedError
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    modelo = MultinomialNB()
+    modelo.fit(X_train, y_train)
+    return modelo, X_test, y_test
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 10 -- Evaluar: accuracy, precision, recall, F1
+# Evaluar: accuracy, precision, recall, F1
 # ---------------------------------------------------------------------------
 def reto10_evaluar(modelo, X_test, y_test):
     """
@@ -102,13 +96,12 @@ def reto10_evaluar(modelo, X_test, y_test):
         Tabla con precision/recall/f1-score por clase (positivo/negativo)
         y accuracy general.
     """
-    # TODO: y_pred = modelo.predict(X_test)
-    # TODO: print(classification_report(y_test, y_pred))
-    raise NotImplementedError
+    y_pred = modelo.predict(X_test)
+    print(classification_report(y_test, y_pred, zero_division=0))
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 11 -- Predictor interactivo de sentimiento
+# RETO 11 -- Predictor interactivo de sentimiento
 # ---------------------------------------------------------------------------
 def reto11_predictor(modelo, vectorizer):
     """
@@ -124,18 +117,18 @@ def reto11_predictor(modelo, vectorizer):
         Predicción: negativo
         > salir
     """
-    # TODO: while True:
-    #           frase = input("> ")
-    #           if frase == "salir": break
-    #           vector = vectorizer.transform([frase])
-    #           print("Predicción:", modelo.predict(vector)[0])
-    raise NotImplementedError
+    while True:
+        frase = input("> ")
+        if frase.strip().lower() == "salir":
+            break
+        vector = vectorizer.transform([frase])
+        print("Predicción:", modelo.predict(vector)[0])
 
 
 if __name__ == "__main__":
     demo()
     print("\n--- Retos ---")
-    # X, y, vectorizer = reto8_vectorizar()
-    # modelo, X_test, y_test = reto9_entrenar(X, y)
-    # reto10_evaluar(modelo, X_test, y_test)
-    # reto11_predictor(modelo, vectorizer)
+    X, y, vectorizer = reto8_vectorizar()
+    modelo, X_test, y_test = reto9_entrenar(X, y)
+    reto10_evaluar(modelo, X_test, y_test)
+    reto11_predictor(modelo, vectorizer)

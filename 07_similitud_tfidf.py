@@ -52,7 +52,7 @@ def demo():
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 12 -- Cargar los 20 documentos y vectorizar con TF-IDF
+# RETO 12 -- Cargar los 20 documentos y vectorizar con TF-IDF
 # ---------------------------------------------------------------------------
 def reto12_tfidf_documentos(carpeta="data/documentos"):
     """
@@ -71,17 +71,19 @@ def reto12_tfidf_documentos(carpeta="data/documentos"):
         X.shape -> (20, N). print(len(vectorizer.get_feature_names_out()))
         para ver el tamaño del vocabulario del corpus completo.
     """
-    # TODO: rutas = sorted(Path(carpeta).glob("*.txt"))
-    # TODO: textos = [p.read_text(encoding="utf-8") for p in rutas]
-    # TODO: nombres = [p.name for p in rutas]
-    # TODO: vectorizer = TfidfVectorizer(stop_words=stopwords.words("spanish"))
-    # TODO: X = vectorizer.fit_transform(textos)
-    # TODO: return X, vectorizer, nombres, textos
-    raise NotImplementedError
+    rutas = sorted(Path(carpeta).glob("*.txt"))
+    textos = [p.read_text(encoding="utf-8") for p in rutas]
+    nombres = [p.name for p in rutas]
+    # Sin quitar stopwords, palabras como "de"/"la"/"es" (presentes en casi
+    # todos los documentos) meten ruido en la similitud -- por eso se
+    # reutiliza el concepto de E2 acá.
+    vectorizer = TfidfVectorizer(stop_words=stopwords.words("spanish"))
+    X = vectorizer.fit_transform(textos)
+    return X, vectorizer, nombres, textos
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 13 -- Similitud entre documentos + ranking del más parecido a doc01
+# RETO 13 -- Similitud entre documentos + ranking del más parecido a doc01
 # ---------------------------------------------------------------------------
 def reto13_similitud(X, nombres):
     """
@@ -96,16 +98,21 @@ def reto13_similitud(X, nombres):
         doc01.txt (python...) más parecido a doc02.txt y doc20.txt (ambos
         hablan de Python), no a los de fútbol/ajedrez/comida.
     """
-    # TODO: sim = cosine_similarity(X)
-    # TODO: idx_doc01 = nombres.index("doc01.txt")
-    # TODO: similitudes = list(enumerate(sim[idx_doc01]))
-    # TODO: quitar el propio doc01 de la lista
-    # TODO: ordenar por similitud descendente, imprimir top 5
-    raise NotImplementedError
+    sim = cosine_similarity(X)
+    idx_doc01 = nombres.index("doc01.txt")
+    similitudes = [
+        (nombres[i], score) for i, score in enumerate(sim[idx_doc01]) if i != idx_doc01
+    ]
+    similitudes.sort(key=lambda par: par[1], reverse=True)
+    print("Documentos más parecidos a doc01.txt:")
+    for nombre, score in similitudes[:5]:
+        print(f"  {nombre}  {score:.2f}")
+    return similitudes[:5]
 
 
 if __name__ == "__main__":
     demo()
     print("\n--- Retos ---")
-    # X, vectorizer, nombres, textos = reto12_tfidf_documentos()
-    # reto13_similitud(X, nombres)
+    X, vectorizer, nombres, textos = reto12_tfidf_documentos()
+    print("Tamaño vocabulario:", len(vectorizer.get_feature_names_out()))
+    reto13_similitud(X, nombres)

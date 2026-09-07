@@ -34,7 +34,7 @@ nltk.download("stopwords", quiet=True)
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 14a -- Indexar el corpus (fit del vectorizer sobre los documentos)
+# RETO 14a -- Indexar el corpus (fit del vectorizer sobre los documentos)
 # ---------------------------------------------------------------------------
 def reto14a_indexar(carpeta="data/documentos"):
     """
@@ -49,12 +49,16 @@ def reto14a_indexar(carpeta="data/documentos"):
     Resultado esperado:
         X_docs.shape -> (20, N).
     """
-    # TODO: mismo cuerpo que reto12_tfidf_documentos
-    raise NotImplementedError
+    rutas = sorted(Path(carpeta).glob("*.txt"))
+    textos = [p.read_text(encoding="utf-8") for p in rutas]
+    nombres = [p.name for p in rutas]
+    vectorizer = TfidfVectorizer(stop_words=stopwords.words("spanish"))
+    X_docs = vectorizer.fit_transform(textos)
+    return X_docs, vectorizer, nombres, textos
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 14b -- Buscar: query -> transform -> similitud -> ranking top-N
+# RETO 14b -- Buscar: query -> transform -> similitud -> ranking top-N
 # ---------------------------------------------------------------------------
 def reto14b_buscar(query, X_docs, vectorizer, nombres, textos, top_n=5):
     """
@@ -75,15 +79,15 @@ def reto14b_buscar(query, X_docs, vectorizer, nombres, textos, top_n=5):
         scores dan 0 -- es una limitación real de TF-IDF puro, buen punto
         de discusión de cierre.
     """
-    # TODO: query_vec = vectorizer.transform([query])
-    # TODO: scores = cosine_similarity(query_vec, X_docs)[0]
-    # TODO: armar lista (nombre, score, texto) para cada documento
-    # TODO: ordenar por score descendente, devolver los top_n
-    raise NotImplementedError
+    query_vec = vectorizer.transform([query])
+    scores = cosine_similarity(query_vec, X_docs)[0]
+    resultados = list(zip(nombres, scores, textos))
+    resultados.sort(key=lambda r: r[1], reverse=True)
+    return resultados[:top_n]
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 14c -- Interfaz de consola del buscador
+# RETO 14c -- Interfaz de consola del buscador
 # ---------------------------------------------------------------------------
 def reto14c_interfaz(X_docs, vectorizer, nombres, textos):
     """
@@ -99,13 +103,15 @@ def reto14c_interfaz(X_docs, vectorizer, nombres, textos):
         3. doc02.txt   0.42
         Consulta: salir
     """
-    # TODO: while True: leer query, si es "salir" romper el loop
-    # TODO: resultados = reto14b_buscar(query, X_docs, vectorizer, nombres, textos)
-    # TODO: imprimir enumerado con score redondeado a 2 decimales
-    raise NotImplementedError
+    while True:
+        query = input("Consulta: ")
+        if query.strip().lower() == "salir":
+            break
+        resultados = reto14b_buscar(query, X_docs, vectorizer, nombres, textos)
+        for i, (nombre, score, _texto) in enumerate(resultados, start=1):
+            print(f"{i}. {nombre}   {score:.2f}")
 
 
 if __name__ == "__main__":
-    # X_docs, vectorizer, nombres, textos = reto14a_indexar()
-    # reto14c_interfaz(X_docs, vectorizer, nombres, textos)
-    pass
+    X_docs, vectorizer, nombres, textos = reto14a_indexar()
+    reto14c_interfaz(X_docs, vectorizer, nombres, textos)

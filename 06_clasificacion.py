@@ -27,7 +27,7 @@ def demo():
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 9b -- Vectorizar noticias.csv (3 clases)
+# RETO 9b -- Vectorizar noticias.csv (3 clases)
 # ---------------------------------------------------------------------------
 def reto_vectorizar_noticias(ruta_csv="data/noticias.csv"):
     """
@@ -40,12 +40,15 @@ def reto_vectorizar_noticias(ruta_csv="data/noticias.csv"):
         y.unique() -> ['deportes' 'politica' 'tecnologia'] (orden puede
         variar).
     """
-    # TODO: reutilizar el mismo patrón de 05_sentimientos.reto8_vectorizar
-    raise NotImplementedError
+    df = pd.read_csv(ruta_csv)
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform(df["texto"])
+    y = df["categoria"]
+    return X, y, vectorizer
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 9c -- Entrenar y evaluar el clasificador de 3 clases
+# RETO 9c -- Entrenar y evaluar el clasificador de 3 clases
 # ---------------------------------------------------------------------------
 def reto_entrenar_evaluar(X, y):
     """
@@ -58,13 +61,18 @@ def reto_entrenar_evaluar(X, y):
     Resultado esperado:
         Reporte con las 3 categorías, precision/recall/f1 por clase.
     """
-    # TODO: dividir, entrenar MultinomialNB, imprimir classification_report
-    # TODO: return el modelo entrenado (se necesita en el siguiente reto)
-    raise NotImplementedError
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    modelo = MultinomialNB()
+    modelo.fit(X_train, y_train)
+    y_pred = modelo.predict(X_test)
+    print(classification_report(y_test, y_pred, zero_division=0))
+    return modelo
 
 
 # ---------------------------------------------------------------------------
-# 🧩 RETO 11b -- Predictor interactivo de categoría
+# RETO 11b -- Predictor interactivo de categoría
 # ---------------------------------------------------------------------------
 def reto_predictor_categoria(modelo, vectorizer):
     """
@@ -79,13 +87,17 @@ def reto_predictor_categoria(modelo, vectorizer):
         > salir
     Este es el "mini IA clasificadora" que cierra el bloque E4.
     """
-    # TODO: loop input() -> transform -> predict -> print
-    raise NotImplementedError
+    while True:
+        texto = input("> ")
+        if texto.strip().lower() == "salir":
+            break
+        vector = vectorizer.transform([texto])
+        print("Categoría:", modelo.predict(vector)[0])
 
 
 if __name__ == "__main__":
     demo()
     print("\n--- Retos ---")
-    # X, y, vectorizer = reto_vectorizar_noticias()
-    # modelo = reto_entrenar_evaluar(X, y)
-    # reto_predictor_categoria(modelo, vectorizer)
+    X, y, vectorizer = reto_vectorizar_noticias()
+    modelo = reto_entrenar_evaluar(X, y)
+    reto_predictor_categoria(modelo, vectorizer)
