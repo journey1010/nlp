@@ -1,20 +1,10 @@
 """
-E2 -- Limpieza de texto (1:20-2:10)
-
-Conceptos de esta hora (explicar sobre la marcha, no antes):
-    - stopwords != "palabras inútiles". Depende de la tarea: "no" es
-      stopword para buscar temas, pero es CLAVE para sentimiento
-      ("no me gustó" pierde su significado si se elimina "no").
-    - stemming = recorta la palabra con reglas fijas -> puede generar
-      raíces que no son palabras reales ("corriendo" -> "corr").
-    - lematización = devuelve la forma base real de la palabra (lema),
-      lingüísticamente válida ("corriendo" -> "correr").
-
 Pipeline de este archivo:
 
     texto -> lowercase -> quitar URLs/puntuación -> tokenizar -> stopwords
           -> stemming/lematización -> texto limpio
 """
+
 
 import re
 
