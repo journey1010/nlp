@@ -44,7 +44,7 @@ def demo():
 # ---------------------------------------------------------------------------
 # Quitar URLs y puntuación
 # ---------------------------------------------------------------------------
-def reto4_quitar_ruido(texto):
+def quitar_ruido(texto):
     texto = texto.lower()
     texto = re.sub(r"https?://\S+|www\.\S+", "", texto)
     texto = re.sub(r"[^\w\s]", "", texto)
@@ -55,7 +55,7 @@ def reto4_quitar_ruido(texto):
 # ---------------------------------------------------------------------------
 # Tokenizar y quitar stopwords
 # ---------------------------------------------------------------------------
-def reto5_quitar_stopwords(texto_limpio):
+def quitar_stopwords(texto_limpio):
     stop_es = set(stopwords.words("spanish"))
     tokens = word_tokenize(texto_limpio, language="spanish")
     return [t for t in tokens if t.lower() not in stop_es]
@@ -64,7 +64,7 @@ def reto5_quitar_stopwords(texto_limpio):
 # ---------------------------------------------------------------------------
 # Stemming vs lematización, lado a lado [00_lemantizacion_view]
 # ---------------------------------------------------------------------------
-def reto6_stemming_lematizacion(tokens):
+def stemming_lematizacion(tokens):
     stemmer = SnowballStemmer("spanish")
     lemmatizer = WordNetLemmatizer()
     print(f"{'original':<15}{'stem':<15}{'lema':<15}")
@@ -77,17 +77,15 @@ def reto6_stemming_lematizacion(tokens):
     return filas
 
 
-# ---------------------------------------------------------------------------
-# 🧩 RETO 7 -- Armar el pipeline completo de limpieza en una función
-# ---------------------------------------------------------------------------
-
-
+def pipeline_limpieza(texto):
+    texto_limpio = quitar_ruido(texto)
+    tokens = quitar_stopwords(texto_limpio)
+    stemmer = SnowballStemmer("spanish")
+    return [stemmer.stem(t) for t in tokens]
 
 if __name__ == "__main__":
-    demo()
-    print("\n--- Retos ---")
-    # texto = open("data/corpus.txt", encoding="utf-8").read()
-    # limpio = reto4_quitar_ruido(texto)
-    # tokens = reto5_quitar_stopwords(limpio)
-    # reto6_stemming_lematizacion(tokens[:15])
-    # print(reto7_pipeline_limpieza("Visita https://x.com AHORA!!! Es GENIAL"))
+    texto = open("data/corpus.txt", encoding="utf-8").read()
+    limpio = quitar_ruido(texto)
+    tokens = quitar_stopwords(limpio)
+    stemming_lematizacion(tokens[:15])
+    print(pipeline_limpieza("Visita https://x.com AHORA!!! Es GENIAL"))
