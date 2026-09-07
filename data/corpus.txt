@@ -1,0 +1,11 @@
+Un corpus es una colección de documentos. Puede ser un conjunto de tweets, de noticias, de reseñas de productos, de correos, o incluso de libros completos. Todo depende del problema que se quiera resolver.
+
+Python se usa muchísimo en Ciencia de Datos, en Machine Learning y en NLP. Con Python, con NLTK y con scikit-learn se puede construir un clasificador de texto en pocas líneas de código... ¿no es increíble?
+
+Los tokens son las unidades mínimas de un texto: palabras, signos de puntuación, números. Tokenizar un texto es el primer paso de CUALQUIER pipeline de NLP, sin excepción.
+
+La limpieza de texto (quitar URLs, quitar signos, pasar a minúsculas) reduce el ruido antes de vectorizar. Sin limpieza, el modelo aprende cosas irrelevantes, como que 'Python.' y 'python' son palabras distintas.
+
+El Procesamiento de Lenguaje Natural (NLP) permite que las computadoras entiendan texto escrito en lenguaje humano. Visita https://www.nltk.org para más info!!! También revisa http://scikit-learn.org, son las dos librerías centrales de este taller.
+
+El objetivo final de este taller es construir un mini buscador inteligente: dado un texto de consulta, el sistema encuentra los documentos más parecidos usando TF-IDF y similitud de coseno.
